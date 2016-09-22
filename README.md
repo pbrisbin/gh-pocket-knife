@@ -16,7 +16,7 @@ As such, it has the following caveats:
 
 ## Usage
 
-**aurget-tags**
+**./aurget-tags**
 
 ```hs
 #!/usr/bin/env stack
@@ -34,7 +34,7 @@ import Data.Aeson
 import GH
 
 -- Declare some data type you care about
-newtype Tag = Tag { tagName :: String } deriving Show
+newtype Tag = Tag { tagName :: String }
 
 -- Describe how to parse it out of JSON responses
 instance FromJSON Tag where
@@ -44,6 +44,8 @@ instance FromJSON Tag where
 main :: IO ()
 main = getEach_ "/repos/pbrisbin/aurget/tags" $ putStrLn . tagName
 ```
+
+Any system with `stack` installed should be able to take this file and run:
 
 ```console
 % ./aurget-tags
