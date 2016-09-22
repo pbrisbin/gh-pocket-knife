@@ -16,5 +16,63 @@ As such, it has the following caveats:
 
 ## Usage
 
-- [Examples](examples/)
+**aurget-tags**
+
+```hs
+#!/usr/bin/env stack
+{- stack
+  --resolver lts-7.0
+  --install-ghc
+  runghc
+  --package aeson
+  --package gh-pocket-knife
+-}
+{-# LANGUAGE OverloadedStrings #-}
+module Main (main) where
+
+import Data.Aeson
+import GH
+
+-- Declare some data type you care about
+newtype Tag = Tag { tagName :: String } deriving Show
+
+-- Describe how to parse it out of JSON responses
+instance FromJSON Tag where
+    parseJSON = withObject "Tag" $ \o -> Tag <$> o .: "name"
+
+-- Call the GH API
+main :: IO ()
+main = getEach_ "/repos/pbrisbin/aurget/tags" $ putStrLn . tagName
+```
+
+```console
+% ./aurget-tags
+v4.7.2
+v4.7.1
+v4.7.0
+...
+```
+
+- [More examples](examples/)
 - [Haddocks](http://hackage.haskell.org/package/gh-pocket-knife)
+
+## CLI Wrapper
+
+There's a small work-in-progress CLI wrapper included in the library. It's a
+simple pass-through to the helper functions and outputs any returned JSON as-is:
+
+```console
+% export GITHUB_ACCESS_TOKEN=...
+% gh-pocket-knife get /repos/pbrisbin/aurget/pulls/1 | jq "."
+{
+  "merged": false,
+  "additions": 17,
+  "state": "closed",
+  "mergeable_state": "dirty",
+  "review_comment_url": "https://api.github.com/repos/pbrisbin/aurget/pulls/comments{/number}",
+  "mergeable": false,
+  "assignees": [],
+  "locked": false,
+  ...
+}
+```
