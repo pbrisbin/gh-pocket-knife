@@ -1,6 +1,12 @@
---
--- TODO: once gh-pocket-knife is released, give this a stack shebang
---
+#!/usr/bin/env stack
+{- stack
+  --resolver lts-7.0
+  --install-ghc
+  runghc
+  --package aeson
+  --package gh-pocket-knife
+  --package load-env
+-}
 {-# LANGUAGE OverloadedStrings #-}
 module Main (main) where
 
@@ -19,6 +25,6 @@ main :: IO ()
 main = do
     loadEnv -- reads GITHUB_ACCESS_TOKEN from .env
 
-    tags <- getAll "/repos/pbrisbin/aurget/tags"
+    tags <- getAll "/repos/pbrisbin/aurget/tags" :: IO [Tag]
 
-    mapM_ print (tags :: [Tag])
+    mapM_ print tags
